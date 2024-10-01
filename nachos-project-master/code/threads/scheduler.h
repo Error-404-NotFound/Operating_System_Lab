@@ -17,6 +17,20 @@
 // the data structures and operations needed to keep track of which
 // thread is running, and which threads are ready but not running.
 
+////////////////////////////////////////////////////
+
+#include<queue>
+#include<vector>
+
+struct ThreadComparator {
+   bool operator()(Thread* t1, Thread* t2) {
+      return t1->priority < t2->priority;
+   }
+};
+
+////////////////////////////////////////////////////
+
+
 class Scheduler {
    public:
     Scheduler();   // Initialize list of ready threads
@@ -35,6 +49,7 @@ class Scheduler {
     // SelfTest for scheduler is implemented in class Thread
 
    private:
+    std::priority_queue<Thread*, std::vector<Thread*>, ThreadComparator> pq;
     List<Thread*>* readyList;  // queue of threads that are ready to run,
                                // but not running
     Thread* toBeDestroyed;     // finishing thread to be destroyed

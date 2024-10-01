@@ -20,9 +20,9 @@ class PCB {
     PCB(int id);
     ~PCB();
 
-    int Exec(char *filename, int pid);
+    // int Exec(char *filename, int pid);
     int Exec(char *filename, int pid, int priority);
-    int Exec2(char *filename, int pid);
+    // int Exec2(char *filename, int pid);
     int GetID();
     int GetNumWait();
 

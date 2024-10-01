@@ -48,43 +48,43 @@ void StartProcess_2(void* pid) {
                     // by doing the syscall "exit"
 }
 
-int PCB::Exec(char* filename, int id) {
-    // cerr << filename << ' ' << pid << endl;
-    multex->P();
+// int PCB::Exec(char* filename, int id) {
+//     // cerr << filename << ' ' << pid << endl;
+//     multex->P();
 
-    this->thread = new Thread(filename, true);
-    if (this->thread == NULL) {
-        printf("\nPCB::Exec: Not enough memory!\n");
-        multex->V();  // Nha CPU de nhuong CPU cho tien trinh khac
-        return -1;    // Tra ve -1 neu that bai
-    }
+//     this->thread = new Thread(filename, true);
+//     if (this->thread == NULL) {
+//         printf("\nPCB::Exec: Not enough memory!\n");
+//         multex->V();  // Nha CPU de nhuong CPU cho tien trinh khac
+//         return -1;    // Tra ve -1 neu that bai
+//     }
 
-    //  Đặt processID của thread này là id.
-    this->thread->processID = id;
-    // Đặt parrentID của thread này là processID của thread gọi thực thi Exec
-    this->parentID = kernel->currentThread->processID;
-    // Gọi thực thi Fork(StartProcess_2,id) => Ta cast thread thành kiểu int,
-    // sau đó khi xử ký hàm StartProcess ta cast Thread về đúng kiểu của nó.
+//     //  Đặt processID của thread này là id.
+//     this->thread->processID = id;
+//     // Đặt parrentID của thread này là processID của thread gọi thực thi Exec
+//     this->parentID = kernel->currentThread->processID;
+//     // Gọi thực thi Fork(StartProcess_2,id) => Ta cast thread thành kiểu int,
+//     // sau đó khi xử ký hàm StartProcess ta cast Thread về đúng kiểu của nó.
 
-    // Không được sử dụng biến id ở đây, vì biến id là biến cục bộ,
-    // nên khi hàm này kết thúc thì giá trị của biến này cũng bị xóa
-    // Đừng hỏi tôi đã mất bao lâu để nhận ra điều này :)
+//     // Không được sử dụng biến id ở đây, vì biến id là biến cục bộ,
+//     // nên khi hàm này kết thúc thì giá trị của biến này cũng bị xóa
+//     // Đừng hỏi tôi đã mất bao lâu để nhận ra điều này :)
 
-    ////////////////
-    this->thread->pThread=kernel->currentThread;
-    this->thread->parrentID=this->parentID;
-    ////////////////
+//     ////////////////
+//     this->thread->pThread=kernel->currentThread;
+//     this->thread->parrentID=this->parentID;
+//     ////////////////
 
-    this->thread->Fork(StartProcess_2, &this->thread->processID);
+//     this->thread->Fork(StartProcess_2, &this->thread->processID);
 
-    ////////////////
-    this->thread->SaveUserState();
-    ////////////////
+//     ////////////////
+//     // this->thread->SaveUserState();
+//     ////////////////
 
-    multex->V();
-    // Trả về id.
-    return id;
-}
+//     multex->V();
+//     // Trả về id.
+//     return id;
+// }
 
 int PCB::Exec(char* filename, int id, int priority) {
     multex->P();

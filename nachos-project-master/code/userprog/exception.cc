@@ -368,6 +368,7 @@ void handle_SC_Exec() {
     int virtAddr;
     virtAddr = kernel->machine->ReadRegister(
         4);  // doc dia chi ten chuong trinh tu thanh ghi r4
+    int priority = kernel->machine->ReadRegister(5);
     char* name;
     name = stringUser2System(virtAddr);  // Lay ten chuong trinh, nap vao kernel
     if (name == NULL) {
@@ -377,7 +378,7 @@ void handle_SC_Exec() {
         return move_program_counter();
     }
 
-    kernel->machine->WriteRegister(2, SysExec(name));
+    kernel->machine->WriteRegister(2, SysExec(name,priority));
     // DO NOT DELETE NAME, THE THEARD WILL DELETE IT LATER
     // delete[] name;
 

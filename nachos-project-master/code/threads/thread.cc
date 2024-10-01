@@ -22,6 +22,7 @@
 #include "synch.h"
 #include "sysdep.h"
 #include <time.h>
+#include <queue>
 
 // this is put at the top of the execution stack, for detecting stack overflows
 const int STACK_FENCEPOST = 0xdedbeef;
@@ -35,6 +36,7 @@ const int STACK_FENCEPOST = 0xdedbeef;
 //----------------------------------------------------------------------
 
 int priorityCount = 1;
+std::priority_queue<int> pq;
 
 Thread::Thread(char *threadName, bool _has_dynamic_name /*=false*/) {
     has_dynamic_name = _has_dynamic_name;
@@ -52,7 +54,27 @@ Thread::Thread(char *threadName, bool _has_dynamic_name /*=false*/) {
     endTime = time(NULL);
     priority = priorityCount++;
     pThread = NULL;
+    SetPriority(priority);
 }
+
+// Thread::Thread(char *threadName, bool _has_dynamic_name, int _priority) {
+//     has_dynamic_name = _has_dynamic_name;
+//     name = threadName;
+//     stackTop = NULL;
+//     stack = NULL;
+//     status = JUST_CREATED;
+//     for (int i = 0; i < MachineStateSize; i++) {
+//         machineState[i] = NULL;  // not strictly necessary, since
+//                                  // new thread ignores contents
+//                                  // of machine registers
+//     }
+//     space = NULL;
+//     startTime = time(NULL);
+//     endTime = time(NULL);
+//     priority = _priority;
+//     pThread = NULL;
+//     SetPriority(priority);
+// }
 
 //----------------------------------------------------------------------
 // Thread::~Thread
@@ -198,6 +220,11 @@ void Thread::Finish() {
 //
 // 	Similar to Thread::Sleep(), but a little different.
 //----------------------------------------------------------------------
+
+void Thread::SetPriority(int p) {
+    priority = p;
+    pq.push(p);
+}
 
 void Thread::Yield() {
     Thread *nextThread;

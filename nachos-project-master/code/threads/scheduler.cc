@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "scheduler.h"
 #include "main.h"
+#include <queue>
+#include <vector>
 
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
@@ -30,6 +32,7 @@
 //----------------------------------------------------------------------
 
 Scheduler::Scheduler() {
+    std::priority_queue<Thread *,std::vector<Thread *>,ThreadComparator> pq;
     readyList = new List<Thread *>;
     toBeDestroyed = NULL;
 }
@@ -55,6 +58,7 @@ void Scheduler::ReadyToRun(Thread *thread) {
 
     thread->setStatus(READY);
     readyList->Append(thread);
+    pq.push(thread);
 }
 
 //----------------------------------------------------------------------
@@ -67,6 +71,17 @@ void Scheduler::ReadyToRun(Thread *thread) {
 
 Thread *Scheduler::FindNextToRun() {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
+
+    while(!readyList->IsEmpty()) {
+        readyList->RemoveFront();
+        // pq.push(t);
+    }
+
+    while(!pq.empty()) {
+        auto p = pq.top();
+        pq.pop();
+        readyList->Append(p);
+    }
 
     if (readyList->IsEmpty()) {
         return NULL;

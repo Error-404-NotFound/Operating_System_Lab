@@ -83,6 +83,7 @@ class Thread {
    public:
     Thread(char *debugName,
            bool _has_dynamic_name = false);  // initialize a Thread
+    // Thread(char *debugName, bool _has_dynamic_name=false, int priority=10);
     ~Thread();                               // deallocate a Thread
                                              // NOTE -- thread being deleted
                                              // must not be running when delete
@@ -92,7 +93,7 @@ class Thread {
     int parrentID;
     int exitStatus;
     clock_t startTime, endTime;
-    int priority;
+    int priority=10;
     Thread* pThread;
     void FreeSpace() {
         if (space != 0) delete space;
@@ -114,6 +115,7 @@ class Thread {
     char *getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();  // test whether thread impl is working
+    void SetPriority(int p);
 
    private:
     // some of the private data for this class is listed above

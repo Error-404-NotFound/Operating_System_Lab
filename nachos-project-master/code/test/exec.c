@@ -9,7 +9,7 @@
 int main() {
     int pid;
     int i;
-    pid = Exec("../test/num_io");
+    pid = Exec("../test/num_io",1);
     if (pid < 0) {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid);
