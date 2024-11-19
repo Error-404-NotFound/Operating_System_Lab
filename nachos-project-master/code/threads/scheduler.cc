@@ -34,6 +34,7 @@
 Scheduler::Scheduler() {
     std::priority_queue<Thread *,std::vector<Thread *>,ThreadComparator> pq;
     readyList = new List<Thread *>;
+    waitList = new List<WaitElem *>;
     toBeDestroyed = NULL;
 }
 
@@ -178,4 +179,32 @@ void Scheduler::CheckToBeDestroyed() {
 void Scheduler::Print() {
     cout << "Ready list contents:\n";
     readyList->Apply(ThreadPrint);
+}
+
+
+// void Scheduler::CheckToBeWait(int pid) {
+//     ListIterator<Thread *> *iter = new ListIterator<Thread *>(waitList);
+//     for (; !iter->IsDone(); iter->Next()) {
+//         if (iter->Item()->processID == pid) {
+//             iter->Item()->setStatus(READY);
+//             readyList->Append(iter->Item());
+//             waitList->Remove(iter->Item());
+//         }
+//     }
+//     delete iter;
+// }
+
+void Scheduler::AppendWait(int x) {
+    WaitElem *we = (WaitElem *)malloc(sizeof(WaitElem));
+    cout << kernel->currentThread->getName() << " is waiting for " << x << endl;
+    // we->thread = kernel->currentThread;
+    // we->pid = x;
+    // if(!waitList->IsInList(we)) {
+    //     cout << "hello";
+    //     waitList->Append(we);
+    // }
+    we->thread = kernel->currentThread;
+    we->pid = x;
+    waitList->Append(we);
+    cout << waitList->NumInList() << endl;
 }

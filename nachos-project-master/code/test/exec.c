@@ -7,12 +7,20 @@
 #define stdout 1
 
 int main() {
-    int pid;
+    int pid1;
+    int pid2;
     int i;
-    pid = Exec("../test/num_io",1);
-    if (pid < 0) {
+    pid1 = Exec("../test/num_io",4);
+    pid2 = Exec("../test/help",4);
+    Wait2(pid1);
+    if(pid2<0)
+    {
+        Write("Exec failed: ",14,stdout);
+        PrintNum(pid2);
+    }
+    if (pid1 < 0) {
         Write("Exec failed: ", 14, stdout);
-        PrintNum(pid);
+        PrintNum(pid1);
     }
     while(1)
     {

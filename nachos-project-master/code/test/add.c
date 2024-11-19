@@ -11,25 +11,31 @@
 
 int main() {
     int result;
-    // int result2;
-    // int result3;
-    // int result4;
-    // int pid2;
+    int result2;
+    int result3;
+    int result4;
+    int pid2;
 
     result = Add(42, 23);
     PrintNum(result);
-    // result2=Sub(42,23);
-    // PrintNum(result2);
-    // PrintString("\n");
-    // result3=Mul(2,3);
-    // PrintNum(result3);
-    // PrintString("\n");
-    // result4=Div(100,5);
-    // PrintNum(result4);
+    PrintString("\n");
+    result2=Sub(42,23);
+    PrintNum(result2);
+    PrintString("\n");
+    result3=Mul(2,3);
+    PrintNum(result3);
+    PrintString("\n");
+    result4=Div(100,5);
+    PrintNum(result4);
     PrintString("\n");
     PrintString("Hello World\n");
-    // OSSleep(10);
-    // PrintHashString("                     Hello                   World                            \n");
+    // pid2 = Exec("../test/num_io",6);
+    OSSleep(10);
+    PrintHashString("                     Hello                   World                            \n");
+    // while(1)
+    // {
+    //     PrintString("Hello World\n");
+    // }
     // pid2 = Exec("../test/help");
     // PrintString("\n");
     // Exec("../test/ascii");
@@ -37,8 +43,8 @@ int main() {
     // PrintNum(pid2);
 
     // PrintString("Hello World\n");
-    Exec("../test/help",2);
-    Exec("../test/help2",56);
+    // Exec("../test/help",2);
+    // Exec("../test/help2",56);
 
     PrintString("\n");
 

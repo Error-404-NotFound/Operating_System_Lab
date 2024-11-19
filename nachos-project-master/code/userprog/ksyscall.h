@@ -31,7 +31,7 @@ void SysSleep(int numTicks) {
     kernel->alarm->WaitUntil(numTicks);
     auto currentState = kernel->interrupt->SetLevel(IntOff);
     kernel->currentThread->Sleep(false);
-    kernel->interrupt->SetLevel(currentState);
+    kernel->interrupt->SetLevel(currentState);   
     // return 0;
 }
 
@@ -245,6 +245,13 @@ int SysWait(char* name) {
     }
 
     return 0;
+}
+
+void SysWait2(int pid) {
+    kernel->scheduler->AppendWait(pid);
+    IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+    kernel->currentThread->Sleep(false);
+    kernel->interrupt->SetLevel(currentLevel);
 }
 
 int SysSignal(char* name) {

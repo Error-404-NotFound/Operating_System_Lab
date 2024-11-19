@@ -88,8 +88,11 @@ int PTable::ExitUpdate(int exitcode) {
 
     // Gọi JoinRelease để giải phóng tiến trình cha đang đợi nó (nếu có)
     // và ExitWait() để xin tiến trình cha cho phép thoát.
-    pcb[id]->JoinRelease();
-    pcb[id]->ExitWait();
+
+    //////////////////////////////////////
+    // Commented to execute the Wait logic
+    // pcb[id]->JoinRelease();
+    // pcb[id]->ExitWait();
 
     Remove(id);
     return exitcode;

@@ -57,6 +57,7 @@ int STable::Wait(char* name) {
             }
         }
     }
+    // Khong ton tai semaphore
     printf("Khong ton tai semaphore");
     return -1;
 }

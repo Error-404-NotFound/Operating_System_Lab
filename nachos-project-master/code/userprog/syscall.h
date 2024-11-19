@@ -53,6 +53,7 @@
 #define SC_Div 57
 #define SC_PrintHashString 58
 #define SC_OSSleep 59
+#define SC_Wait2 60
 
 #ifndef IN_ASM
 
@@ -195,6 +196,8 @@ int Close(OpenFileId id);
 int CreateSemaphore(char *name, int semval);
 
 int Wait(char *name);
+
+int Wait2(int pid);
 
 int Signal(char *name);
 

@@ -85,12 +85,21 @@ bool Machine::ReadMem(int addr, int size, int *value) {
     int physicalAddress;
 
     DEBUG(dbgAddr, "Reading VA " << addr << ", size " << size);
+    // cout << "------------------------------------------------------------------------------------" << endl;
+    // cout << "Reading VA " << addr << ", size " << size << endl;
+    // cout << "------------------------------------------------------------------------------------" << endl;
 
     exception = Translate(addr, &physicalAddress, size, FALSE);
+    // cout << "------------------------------------------------------------------------------------" << endl;
+    // cout << "Reading VA abba dabba chabba " << physicalAddress << ", size " << size << endl;
+    // cout << "------------------------------------------------------------------------------------" << endl;
     if (exception != NoException) {
         RaiseException(exception, addr);
+        // cout<<"after raising exception: "<<exception<<endl;
+        // if(exception!= PageFaultException) return FALSE;
         return FALSE;
     }
+    // cout<<"size: "<<size<<endl;
     switch (size) {
         case 1:
             data = mainMemory[physicalAddress];
@@ -103,6 +112,7 @@ bool Machine::ReadMem(int addr, int size, int *value) {
             break;
 
         case 4:
+            // cout<<"case 4"<<endl;
             data = *(unsigned int *)&mainMemory[physicalAddress];
             *value = WordToHost(data);
             break;
@@ -138,8 +148,10 @@ bool Machine::WriteMem(int addr, int size, int value) {
     exception = Translate(addr, &physicalAddress, size, TRUE);
     if (exception != NoException) {
         RaiseException(exception, addr);
-        return FALSE;
+        if(exception!= PageFaultException) return FALSE;
     }
+
+
     switch (size) {
         case 1:
             mainMemory[physicalAddress] = (unsigned char)(value & 0xff);
@@ -151,6 +163,7 @@ bool Machine::WriteMem(int addr, int size, int value) {
             break;
 
         case 4:
+            // cout<<"case 4"<<endl;
             *(unsigned int *)&mainMemory[physicalAddress] =
                 WordToMachine((unsigned int)value);
             break;
@@ -232,6 +245,9 @@ ExceptionType Machine::Translate(int virtAddr, int *physAddr, int size,
         return ReadOnlyException;
     }
     pageFrame = entry->physicalPage;
+    // cout << "------------------------------------------------------------------------------------" << endl;
+    // cout << "pageFrame: " << pageFrame << endl;
+    // cout << "------------------------------------------------------------------------------------" << endl;
 
     // if the pageFrame is too big, there is something really wrong!
     // An invalid translation was loaded into the page table or TLB.

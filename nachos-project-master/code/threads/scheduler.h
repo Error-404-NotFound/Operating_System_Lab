@@ -44,14 +44,24 @@ class Scheduler {
     // Cause nextThread to start running
     void CheckToBeDestroyed();  // Check if thread that had been
                                 // running needs to be deleted
+    void CheckToBeWait(int pid);// Check if thread that had been
+                                // running needs to be wait
     void Print();               // Print contents of ready list
 
     // SelfTest for scheduler is implemented in class Thread
-
+    
+    void CheckWait();
+    void AppendWait(int id);
+    struct WaitElem {
+      Thread* thread;
+      int pid;
+    };
+    List<WaitElem*>* waitList;
    private:
     std::priority_queue<Thread*, std::vector<Thread*>, ThreadComparator> pq;
     List<Thread*>* readyList;  // queue of threads that are ready to run,
                                // but not running
+   //  List<Thread*>* waitList;   // queue of threads that are waiting to run
     Thread* toBeDestroyed;     // finishing thread to be destroyed
                                // by the next thread that runs
 };

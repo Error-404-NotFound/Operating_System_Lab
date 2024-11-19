@@ -444,6 +444,13 @@ void handle_SC_Wait() {
     return move_program_counter();
 }
 
+void handle_SC_Wait2() {
+    DEBUG(dbgSys, "Wait2 " << kernel->machine->ReadRegister(4) << "\n");
+    int pid = (int)kernel->machine->ReadRegister(4);
+    SysWait2(pid);
+    return move_program_counter();
+}
+
 void handle_SC_Signal() {
     int virtAddr = kernel->machine->ReadRegister(4);
 
@@ -466,17 +473,59 @@ void handle_SC_GetPid() {
     return move_program_counter();
 }
 
+// void handle_Page_Fault_Exception() {
+//     unsigned int badVAddr = kernel->machine->ReadRegister(BadVAddrReg);
+//     kernel->currentThread->space->handlePageFault(badVAddr);
+//     // // cout << badVAddr << endl;
+//     // unsigned int vpn, offset;
+//     // vpn = (unsigned)badVAddr / PageSize;
+//     // offset = (unsigned)badVAddr % PageSize;
+//     // TranslationEntry *enter;
+//     // enter = &kernel->machine->pageTable[vpn];
+//     // unsigned int pageFrame;
+//     // pageFrame = enter->physicalPage;
+//     // // auto pageTable = kernel->machine->pageTable;
+//     // kernel->machine->pageTable[pageFrame].virtualPage = pageFrame;
+//     // kernel->machine->pageTable[pageFrame].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
+//     // kernel->machine->pageTable[pageFrame].valid = TRUE;
+//     // kernel->machine->pageTable[pageFrame].use = FALSE;
+//     // kernel->machine->pageTable[pageFrame].dirty = FALSE;
+//     // kernel->machine->pageTable[pageFrame].readOnly = FALSE;  
+//     // bzero(&(kernel->machine->mainMemory[kernel->machine->pageTable[pageFrame].physicalPage * PageSize]),
+//     //     PageSize);
+//     // int data;
+//     // int physAddr = pageFrame * PageSize + offset;
+//     // data = *(unsigned int *)&kernel->machine->mainMemory[physAddr];
+//     cout<<"Page Fault Handled"<<endl;
+
+//     return;
+// }
+
 void ExceptionHandler(ExceptionType which) {
     int type = kernel->machine->ReadRegister(2);
 
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
-
+    // cout << "-------------------------------------------------------------------------" << endl;
+    // cout << "Received Exception " << which << " type: " << type << "\n";
+    // cout << "-------------------------------------------------------------------------" << endl;
     switch (which) {
         case NoException:  // return control to kernel
             kernel->interrupt->setStatus(SystemMode);
             DEBUG(dbgSys, "Switch to system mode\n");
             break;
-        case PageFaultException:
+
+        case PageFaultException:{
+            // cout<<"PageExecuption Found"<<endl;
+            // unsigned int badVAddr1 = kernel->machine->ReadRegister(39);
+            // cout << badVAddr1 << endl;
+            // kernel->currentThread->space->addPageEntry(badVAddr1);
+            // return;
+        }
+            break;
+            // executable->ReadAt(
+            //     &(kernel->machine->mainMemory[pageTable[0].physicalPage * PageSize]),
+            //     PageSize, noffH.code.inFileAddr);
+
         case ReadOnlyException:
         case BusErrorException:
         case AddressErrorException:
@@ -539,6 +588,8 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_CreateSemaphore();
                 case SC_Wait:
                     return handle_SC_Wait();
+                case SC_Wait2:
+                    return handle_SC_Wait2();
                 case SC_Signal:
                     return handle_SC_Signal();
                 case SC_GetPid:

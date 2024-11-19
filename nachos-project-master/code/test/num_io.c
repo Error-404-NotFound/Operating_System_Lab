@@ -9,8 +9,8 @@
 
 int main()
 {
-    int i;
-    while(1)
+    int i, u=10;
+    while(u--)
     {
         for(i=0;i<10000;i++);
         PrintString("num_io.c\n");

@@ -102,6 +102,7 @@ AddrSpace::~AddrSpace() {
 //----------------------------------------------------------------------
 
 AddrSpace::AddrSpace(char *fileName) {
+    fileNameMain = fileName;
     OpenFile *executable = kernel->fileSystem->Open(fileName);
     NoffHeader noffH;
     unsigned int i, size, j, offset;
@@ -126,7 +127,17 @@ AddrSpace::AddrSpace(char *fileName) {
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size +
            UserStackSize;  // we need to increase the size
                            // to leave room for the stack
+    // cout << "-------------------------------------------------------------------------" << endl;
+    // cout << "Size: " << size << endl;
+    // cout << "noffH.code.size: " << noffH.code.size << endl;
+    // cout << "noffH.initData.size: " << noffH.initData.size << endl;
+    // cout << "noffH.uninitData.size: " << noffH.uninitData.size << endl;
+    // cout << "UserStackSize: " << UserStackSize << endl;
+    // cout << "-------------------------------------------------------------------------" << endl;
     numPages = divRoundUp(size, PageSize);
+    // cout << "-------------------------------------------------------------------------" << endl;
+    // cout << "NumPages: " << numPages << endl;
+    // cout << "-------------------------------------------------------------------------" << endl;
     size = numPages * PageSize;
 
     ASSERT(numPages <= NumPhysPages);  // check we're not trying
@@ -146,11 +157,24 @@ AddrSpace::AddrSpace(char *fileName) {
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
     // first, set up the translation
     pageTable = new TranslationEntry[numPages];
+    // pageTable[0].virtualPage = 0;
+    // pageTable[0].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
+    // pageTable[0].valid = TRUE;
+    // pageTable[0].use = FALSE;
+    // pageTable[0].dirty = FALSE;
+    // pageTable[0].readOnly = FALSE;  
+    // bzero(&(kernel->machine->mainMemory[pageTable[0].physicalPage * PageSize]),
+    //       PageSize);
+    // executable->ReadAt(
+    //     &(kernel->machine->mainMemory[pageTable[0].physicalPage * PageSize]),
+    //     PageSize, noffH.code.inFileAddr);
+    
     for (i = 0; i < numPages; i++) {
         pageTable[i].virtualPage = i;  // for now, virtual page # = phys page #
         pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
         // cerr << pageTable[i].physicalPage << endl;
         pageTable[i].valid = TRUE;
+        // pageTable[i].valid = FALSE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
         pageTable[i].readOnly = FALSE;  // if the code segment was entirely on
@@ -309,3 +333,43 @@ ExceptionType AddrSpace::Translate(unsigned int vaddr, unsigned int *paddr,
 
     return NoException;
 }
+
+// void AddrSpace::addPageEntry( unsigned int badVAddr)
+// { 
+//     NoffHeader noffH;
+//     unsigned int vpn = badVAddr / PageSize;
+//     // cout << vpn << endl;
+// //     pageTable[vpn].virtualPage = vpn; 
+//         pageTable[vpn].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
+//         pageTable[vpn].valid = TRUE;
+//         // pageTable[vpn].use = FALSE;
+//         // pageTable[vpn].dirty = FALSE;
+//         // pageTable[vpn].readOnly = FALSE; 
+//         // bzero(&(kernel->machine
+//         //             ->mainMemory[pageTable[vpn].physicalPage * PageSize]),
+//         //       PageSize);
+//         // cout << fileNameMain << endl;
+//     OpenFile *executable = kernel->fileSystem->Open(fileNameMain);
+//     executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
+//     if (noffH.code.size + noffH.code.virtualAddr>=badVAddr && badVAddr>=noffH.code.virtualAddr) {
+//      //  cout<<badVAddr<<" "<<noffH.code.size<<" "<<noffH.code.virtualAddr<<endl;
+//             {
+//                 executable->ReadAt(
+//                 &(kernel->machine->mainMemory[noffH.code.virtualAddr]) +
+//                     (pageTable[vpn].physicalPage * PageSize),
+//                 PageSize, noffH.code.inFileAddr + (vpn * PageSize));
+//             }
+//     }
+//     if (noffH.initData.size + noffH.initData.virtualAddr >=badVAddr && badVAddr>=noffH.initData.virtualAddr && noffH.initData.size > 0 ) {
+//        //  cout<<badVAddr<<" "<<noffH.initData.size<<" "<<noffH.initData.virtualAddr<<endl;
+//         {
+//             executable->ReadAt(
+//                 &(kernel->machine->mainMemory[noffH.initData.virtualAddr]) +
+//                     (pageTable[vpn].physicalPage * PageSize),
+//                 PageSize, noffH.initData.inFileAddr + (vpn * PageSize));
+//         }
+//     }
+//    // cout<<noffH.initData.size<<endl;
+//  //   printf("%u %u\n",noffH.code.virtualAddr, noffH.initData.virtualAddr );
+//    // cout<<"everything done added pagetable entry"<<" "<<"vpn value:"<<vpn<<" "<<badVAddr<<endl;
+// }
